@@ -1,4 +1,15 @@
-module change_heat(input clk, input button1, input button2, input toggle_oven, input toggle_time_temp, input toggle_set, output reg [6:0] hex2, output reg [6:0] hex1, output reg [6:0] hex0, output reg temp_reached, output );
+module change_heat( input clk, // clk
+                    input button1, //top button
+                    input button2, //bottom buton
+                    input toggle_oven, // S0, turns oven on and off 
+                    input toggle_time_temp, // S1, switches between 
+                    input toggle_set, //S2, switches between settings with either temperature or timer
+                    output reg [6:0] hex3, //most significant digit
+                    output reg [6:0] hex2, 
+                    output reg [6:0] hex1, 
+                    output reg [6:0] hex0, //least significant digit
+                    output reg temp_reached, // 
+                    output reg timer_reached);
 	
 	
 	parameter MAX_COUNT = 50000000; // Every 2 seconds

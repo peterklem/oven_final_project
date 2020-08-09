@@ -1,5 +1,5 @@
 module Timer (output reg [6:0] Z1 , input clk, output reg [6:0] Z2, output reg [6:0] Z3, output reg [6:0] Z4, input button1, input button2, input toggle_set);
-	parameter MAX_COUNT = 25000000;
+	parameter max_count_timer = 25000000;
 		
 	reg [28:0] count = 0;
 		
@@ -27,7 +27,7 @@ module Timer (output reg [6:0] Z1 , input clk, output reg [6:0] Z2, output reg [
 
 	
 	always @ (posedge clk) begin
-		if (count <= MAX_COUNT) begin
+		if (count <= max_count_timer) begin
 			count <= count + 1;
 		end else begin 
 			count <= 0;

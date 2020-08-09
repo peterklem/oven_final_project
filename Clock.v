@@ -1,4 +1,10 @@
-module Clock (output reg [6:0] Z1 , input clk, output reg [6:0] Z2, output reg [6:0] Z3, output reg [6:0] Z4);
+module Clock (  output reg [6:0] hex0 , // hex0
+                input clk, 
+                output reg [6:0] hex1, //hex1
+                output reg [6:0] hex2, //hex2
+                output reg [6:0] hex3); //hex3
+
+
 		parameter MAX_COUNT = 25000000;
 		
 		reg [28:0] count = 0;
@@ -47,34 +53,34 @@ module Clock (output reg [6:0] Z1 , input clk, output reg [6:0] Z2, output reg [
 		always @ (*) begin
 			case (number) 
 				0: begin
-					Z1 = 7'b1000000;
+					hex0 = 7'b1000000;
 				end
 				1: begin
-					Z1 = 7'b1111001;
+					hex0 = 7'b1111001;
 				end
 				2: begin
-					Z1 = 7'b0100100;
+					hex0 = 7'b0100100;
 				end
 				3: begin
-					Z1 = 7'b0110000;
+					hex0 = 7'b0110000;
 				end
 				4: begin
-					Z1 = 7'b0011001;
+					hex0 = 7'b0011001;
 				end
 				5: begin
-					Z1 = 7'b0010010;
+					hex0 = 7'b0010010;
 				end
 				6: begin
-					Z1 = 7'b0000010;
+					hex0 = 7'b0000010;
 				end
 				7: begin
-					Z1 = 7'b1111000;
+					hex0 = 7'b1111000;
 				end
 				8: begin
-					Z1 = 7'b0000000;
+					hex0 = 7'b0000000;
 				end
 				9: begin
-					Z1 = 7'b0010000;
+					hex0 = 7'b0010000;
 				end
 			endcase
 		end
@@ -82,22 +88,22 @@ module Clock (output reg [6:0] Z1 , input clk, output reg [6:0] Z2, output reg [
 		always @ (*) begin
 			case (number2)
 				0: begin
-					Z2 = 7'b1000000;
+					hex1 = 7'b1000000;
 				end
 				1: begin
-					Z2 = 7'b1111001;
+					hex1 = 7'b1111001;
 				end
 				2: begin
-					Z2 = 7'b0100100;
+					hex1 = 7'b0100100;
 				end
 				3: begin
-					Z2 = 7'b0110000;
+					hex1 = 7'b0110000;
 				end
 				4: begin
-					Z2 = 7'b0011001;
+					hex1 = 7'b0011001;
 				end
 				5: begin
-					Z2 = 7'b0010010;
+					hex1 = 7'b0010010;
 				end
 			endcase
 		end
@@ -105,34 +111,34 @@ module Clock (output reg [6:0] Z1 , input clk, output reg [6:0] Z2, output reg [
 		always @ (*) begin
 			case (number3) 
 				0: begin
-					Z3 = 7'b1000000;
+					hex2 = 7'b1000000;
 				end
 				1: begin
-					Z3 = 7'b1111001;
+					hex2 = 7'b1111001;
 				end
 				2: begin
-					Z3 = 7'b0100100;
+					hex2 = 7'b0100100;
 				end
 				3: begin
-					Z3 = 7'b0110000;
+					hex2 = 7'b0110000;
 				end
 				4: begin
-					Z3 = 7'b0011001;
+					hex2 = 7'b0011001;
 				end
 				5: begin
-					Z3 = 7'b0010010;
+					hex2 = 7'b0010010;
 				end
 				6: begin
-					Z3 = 7'b0000010;
+					hex2 = 7'b0000010;
 				end
 				7: begin
-					Z3 = 7'b1111000;
+					hex2 = 7'b1111000;
 				end
 				8: begin
-					Z3 = 7'b0000000;
+					hex2 = 7'b0000000;
 				end
 				9: begin
-					Z3 = 7'b0010000;
+					hex2 = 7'b0010000;
 				end
 			endcase
 		end
@@ -140,22 +146,22 @@ module Clock (output reg [6:0] Z1 , input clk, output reg [6:0] Z2, output reg [
 		always @ (*) begin
 			case (number4)
 				0: begin
-					Z4 = 7'b1000000;
+					hex3 = 7'b1000000;
 				end
 				1: begin
-					Z4 = 7'b1111001;
+					hex3 = 7'b1111001;
 				end
 				2: begin
-					Z4 = 7'b0100100;
+					hex3 = 7'b0100100;
 				end
 				3: begin
-					Z4 = 7'b0110000;
+					hex3 = 7'b0110000;
 				end
 				4: begin
-					Z4 = 7'b0011001;
+					hex3 = 7'b0011001;
 				end
 				5: begin
-					Z4 = 7'b0010010;
+					hex3 = 7'b0010010;
 				end
 			endcase
 		end
