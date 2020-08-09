@@ -37,7 +37,7 @@ module change_heat(	input clk,
 	
 	// REGISTERS FOR OVEN TIMER
 	// ==============================================================
-	parameter max_count_timer = 25000000;
+	parameter max_count_timer = 25000000; // same for clock
 	reg [28:0] count_timer = 0;
 	reg timer_clk;
 	
@@ -56,6 +56,13 @@ module change_heat(	input clk,
 
 	// ==============================================================
 	
+	// REGISTERS FOR OVEN CLOCK
+	// ==============================================================
+	reg [3:0] number1_clock = 0;
+	reg [2:0] number2_clock = 0;
+	reg [3:0] number3_clock = 0;
+	reg [2:0] number4_clock = 0;
+	// ==============================================================
 
 	
 	// Button timer, heat clock, and timer/countup clock 
@@ -87,78 +94,83 @@ module change_heat(	input clk,
 	
 	// User change temperature
 	always @(posedge button_clk) begin
-		if (toggle_time_temp == 0) begin // Looking at timer
-			if(toggle_set == 0) begin // set Time
-				if (button1 == 0) begin
-					if (set_sec >= 55) begin
-						set_sec = 0;
-						set_min = set_min + 1;
-						num3 = set_min % 10;
-						num4 = set_min / 10;
-					end else begin
-						set_sec = set_sec + 5;
-						num = set_sec % 10;
-						num2 = set_sec / 10;
-					end
-				end else if (button2 == 0) begin
-					if (set_sec == 0) begin
-						set_min = set_min - 1;
-						num3 = set_min % 10;
-						num4 = set_min / 10;
-						set_sec = 60;
-					end else begin
-						set_sec = set_sec - 5;
-						num = set_sec % 10;
-						num2 = set_sec / 10;
+		if (toggle_oven == 1) begin // Oven is on
+			if (toggle_time_temp == 0) begin // Looking at timer
+				if(toggle_set == 0) begin // set Time
+					if (button1 == 0) begin
+						if (set_sec >= 55) begin
+							set_sec = 0;
+							set_min = set_min + 1;
+							num3 = set_min % 10;
+							num4 = set_min / 10;
+						end else begin
+							set_sec = set_sec + 5;
+							num = set_sec % 10;
+							num2 = set_sec / 10;
+						end
+					end else if (button2 == 0) begin
+						if (set_sec == 0) begin
+							set_min = set_min - 1;
+							num3 = set_min % 10;
+							num4 = set_min / 10;
+							set_sec = 60;
+						end else begin
+							set_sec = set_sec - 5;
+							num = set_sec % 10;
+							num2 = set_sec / 10;
+						end
 					end
 				end
-			end
-		end else begin // looking at temperature
-			if (toggle_set == 0) begin // toggle_set = 0 means we are setting temperature
-				if (button1 == 0) begin // Increase 
-					goal_temp = goal_temp + 5;
-				end else if (button2 == 0) begin
-					goal_temp = goal_temp - 5;
+			end else begin // looking at temperature
+				if (toggle_set == 0) begin // toggle_set = 0 means we are setting temperature
+					if (button1 == 0) begin // Increase 
+						goal_temp = goal_temp + 5;
+					end else if (button2 == 0) begin
+						goal_temp = goal_temp - 5;
+					end
 				end
 			end
 		end
-		
 	end
 	
 	// Update hex displays
 	always @(*) begin
-		if (toggle_time_temp == 1) begin 
-			// Show temperature vals
-			if (toggle_set == 0) begin // Setting temperature
-				hex3_num = 11;
-				hex2_num = goal_temp / 100; 
-				hex1_num = (goal_temp / 10) % 10;
-				hex0_num = goal_temp % 10;
+		if (toggle_oven == 1) begin // oven is on
+			if (toggle_time_temp == 1) begin 
+				// Show temperature vals
+				if (toggle_set == 0) begin // Setting temperature
+					hex3_num = 11;
+					hex2_num = goal_temp / 100; 
+					hex1_num = (goal_temp / 10) % 10;
+					hex0_num = goal_temp % 10;
+				end else begin
+					hex3_num = 11;
+					hex2_num = updated_temp / 100; 
+					hex1_num = (updated_temp / 10) % 10;
+					hex0_num = updated_temp % 10;
+				end
 			end else begin
-				hex3_num = 11;
-				hex2_num = updated_temp / 100; 
-				hex1_num = (updated_temp / 10) % 10;
-				hex0_num = updated_temp % 10;
+				// Timer values calculated from registers
+				if (toggle_set == 0) begin
+					hex0_num = num;
+					hex1_num = num2;
+					hex2_num = num3;
+					hex3_num = num4;
+				end else begin
+					hex0_num = number;
+					hex1_num = number2;
+					hex2_num = number3;
+					hex3_num = number4;
+				end
 			end
-		end else begin
-			// Timer values calculated from registers
-			if (toggle_set == 0) begin
-				hex0_num = num;
-				hex1_num = num2;
-				hex2_num = num3;
-				hex3_num = num4;
+			// Display light for when oven is done preheating
+			if (updated_temp > goal_temp - 2 && updated_temp < goal_temp + 2) begin
+				temp_reached = 1; // Light on
 			end else begin
-				hex0_num = number;
-				hex1_num = number2;
-				hex2_num = number3;
-				hex3_num = number4;
+				temp_reached = 0; // Light off
 			end
-		end
-		// Display light for when oven is done preheating
-		if (updated_temp > goal_temp - 2 && updated_temp < goal_temp + 2) begin
-			temp_reached = 1; // Light on
-		end else begin
-			temp_reached = 0; // Light off
+		end else begin // Oven is off
+			
 		end
 	end
 	
@@ -183,41 +195,65 @@ module change_heat(	input clk,
 	
 	//Countdown 
 	always @ (posedge timer_clk) begin
-		if (toggle_set == 0) begin
-			number = num;
-			number2 = num2;
-			number3 = num3;
-			number4 = num4;
-		end else if (toggle_set == 1) begin //Start timer
-			if (number == 0 && number2 == 0 && number3 == 0 && number4 == 0) begin
-					timer_reached <= 1;
-					number <= 0;
-					number2 <= 0;
-					number3 <= 0;
-					number4 <= 0;
-			end else begin
-				timer_reached <= 0;
-				if (number == 0) begin
-					number <= 9;
-					number2 <= number2 - 1;
-					if (number2 == 0) begin
-						number2 <= 5;
-						number3 <= number3 - 1;
-						if (number3 == 0) begin
-							number3 <= 9;
-							number4 <= number4 - 1;
-							if (number4 == 0) begin
-								number4 <= 5;
+		if (toggle_oven == 1) begin //oven is on
+			if (toggle_set == 0) begin
+				number = num;
+				number2 = num2;
+				number3 = num3;
+				number4 = num4;
+			end else if (toggle_set == 1) begin //Start timer
+				if (number == 0 && number2 == 0 && number3 == 0 && number4 == 0) begin
+						timer_reached <= 1;
+						number <= 0;
+						number2 <= 0;
+						number3 <= 0;
+						number4 <= 0;
+				end else begin
+					timer_reached <= 0;
+					if (number == 0) begin
+						number <= 9;
+						number2 <= number2 - 1;
+						if (number2 == 0) begin
+							number2 <= 5;
+							number3 <= number3 - 1;
+							if (number3 == 0) begin
+								number3 <= 9;
+								number4 <= number4 - 1;
+								if (number4 == 0) begin
+									number4 <= 5;
+								end
+							end else begin
+								number3 <= number3 - 1;
 							end
 						end else begin
-							number3 <= number3 - 1;
+							number2 <= number2 - 1;
 						end
 					end else begin
-						number2 <= number2 - 1;
+						number <= number - 1;
+					end
+				end
+			end
+		end else begin // oven is off
+			if (number1_clock >= 9) begin
+				number1_clock <= 0;
+				number2_clock <= number2_clock + 1;
+				if (number2_clock >= 5) begin
+					number2_clock <= 0;
+					number3_clock <= number3_clock +1;
+					if (number3_clock >= 9) begin
+						number3_clock <= 0;
+						number4_clock <= number4_clock + 1;
+						if (number4_clock >= 5) begin
+							number4_clock <= 0;
+						end
+					end else begin
+						number3_clock <= number3_clock + 1;
 					end
 				end else begin
-					number <= number - 1;
+					number2_clock <= number2_clock + 1;
 				end
+			end else begin
+				number1_clock <= number1_clock + 1;
 			end
 		end
 	end
