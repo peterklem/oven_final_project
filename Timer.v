@@ -125,15 +125,15 @@ module Timer (output reg [6:0] Z1 , input clk, output reg [6:0] Z2, output reg [
 	
 	always @ (*) begin
 		if (toggle_set == 0) begin
-			hex0 = num;
-			hex1= num2;
-			hex2 = num3;
-			hex3 = num4;
+			hex0_num = num;
+			hex1_num = num2;
+			hex2_num = num3;
+			hex3_num = num4;
 		end else begin
-			hex0 = number;
-			hex1 = number2;
-			hex2 = number3;
-			hex3 = number4;
+			hex0_num = number;
+			hex1_num = number2;
+			hex2_num = number3;
+			hex3_num = number4;
 		end
 	end
 
