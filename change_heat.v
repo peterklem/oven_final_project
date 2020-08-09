@@ -170,6 +170,11 @@ module change_heat(	input clk,
 				temp_reached = 0; // Light off
 			end
 		end else begin // Oven is off
+			hex3_num = number4_clock;
+			hex2_num = number3_clock;
+			hex1_num = number2_clock;
+			hex0_num = number1_clock; 
+			
 			
 		end
 	end
