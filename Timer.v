@@ -35,7 +35,8 @@ module Timer (output reg [6:0] Z1 , input clk, output reg [6:0] Z2, output reg [
 		end
 	end 
 	
-	reg [13:0] set_time = 0;
+	reg [5:0] set_sec = 0;
+	reg [5:0] set_min = 0;
 	reg [3:0] hex0;
 	reg [2:0] hex1;
 	reg [3:0] hex2;
@@ -56,17 +57,27 @@ module Timer (output reg [6:0] Z1 , input clk, output reg [6:0] Z2, output reg [
 	always @(posedge button_clk) begin
 		if(toggle_set == 0) begin // set Time
 			if (button1 == 0) begin
-				set_time = set_time + 5;
-				num = set_time % 10;
-				num2 = (set_time % 100) / 10;
-				num3 = (set_time / 100);
-				num4 = (set_time / 1000);
+				if (set_sec >= 55) begin
+					set_sec = 0;
+					set_min = set_min + 1;
+					num3 = set_min % 10;
+					num4 = set_min / 10;
+				end else begin
+					set_sec = set_sec + 5;
+					num = set_sec % 10;
+					num2 = set_sec / 10;
+				end
 			end else if (button2 == 0) begin
-				set_time = set_time - 5;
-				num = set_time % 10;
-				num2 = (set_time % 100) / 10;
-				num3 = (set_time / 100);
-				num4 = (set_time / 1000);
+				if (set_sec == 0) begin
+					set_min = set_min - 1;
+					num3 = set_min % 10;
+					num4 = set_min / 10;
+					set_sec = 60;
+				end else begin
+					set_sec = set_sec - 5;
+					num = set_sec % 10;
+					num2 = set_sec / 10;
+				end
 			end
 		end
 	end
