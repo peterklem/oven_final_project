@@ -9,7 +9,7 @@ module change_heat(	input clk,
 							output reg [6:0] hex1, 
 							output reg [6:0] hex0, 
 							output reg temp_reached, // temperature LED
-							output timer_reached); // timer LED
+							output reg timer_reached); // timer LED
 	
 	
 	// REGISTERS AND PARAMETERS FOR THE OVEN HEAT PART
@@ -130,10 +130,12 @@ module change_heat(	input clk,
 		if (toggle_time_temp == 1) begin 
 			// Show temperature vals
 			if (toggle_set == 0) begin // Setting temperature
+				hex3_num = 11;
 				hex2_num = goal_temp / 100; 
 				hex1_num = (goal_temp / 10) % 10;
 				hex0_num = goal_temp % 10;
 			end else begin
+				hex3_num = 11;
 				hex2_num = updated_temp / 100; 
 				hex1_num = (updated_temp / 10) % 10;
 				hex0_num = updated_temp % 10;
@@ -188,13 +190,13 @@ module change_heat(	input clk,
 			number4 = num4;
 		end else if (toggle_set == 1) begin //Start timer
 			if (number == 0 && number2 == 0 && number3 == 0 && number4 == 0) begin
-					timer_reached <= 0;
+					timer_reached <= 1;
 					number <= 0;
 					number2 <= 0;
 					number3 <= 0;
 					number4 <= 0;
 			end else begin
-				timer_reached <= 1;
+				timer_reached <= 0;
 				if (number == 0) begin
 					number <= 9;
 					number2 <= number2 - 1;
@@ -225,35 +227,36 @@ module change_heat(	input clk,
 	always @ (*) begin
 		case (hex3_num) 
 			 0: begin
-				  hex2 = 7'b1000000;
+				  hex3 = 7'b1000000;
 			 end
 			 1: begin
-				  hex2 = 7'b1111001;
+				  hex3 = 7'b1111001;
 			 end
 			 2: begin
-				  hex2 = 7'b0100100;
+				  hex3 = 7'b0100100;
 			 end
 			 3: begin
-				  hex2 = 7'b0110000;
+				  hex3 = 7'b0110000;
 			 end
 			 4: begin
-				  hex2 = 7'b0011001;
+				  hex3 = 7'b0011001;
 			 end
 			 5: begin
-				  hex2 = 7'b0010010;
+				  hex3 = 7'b0010010;
 			 end
 			 6: begin
-				  hex2 = 7'b0000010;
+				  hex3 = 7'b0000010;
 			 end
 			 7: begin
-				  hex2 = 7'b1111000;
+				  hex3 = 7'b1111000;
 			 end
 			 8: begin
-				  hex2 = 7'b0000000;
+				  hex3 = 7'b0000000;
 			 end
 			 9: begin
-				  hex2 = 7'b0010000;
+				  hex3 = 7'b0010000;
 			 end
+			 default: hex3 = 7'b1111111;
 		endcase
 		
 		case (hex2_num) 
